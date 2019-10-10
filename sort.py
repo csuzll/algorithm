@@ -89,6 +89,86 @@ def shellsort(alist):
 			alist[preindex+gap] = currentvalue
 		gap = gap // 2 
 
+# 快速排序, O(NlogN)
+def quicksort(alist, first=0, last=None):
+	if last == None:
+		last = len(alist) - 1
+
+	if first < last:
+		base = alist[first]
+		leftmark = first + 1
+		rightmark = last
+		done = False
+
+		while not done:
+			while leftmark <= rightmark and alist[leftmark] <= base:
+				leftmark += 1
+			while alist[rightmark] >= base and rightmark >= leftmark:
+				rightmark -= 1
+			if leftmark < rightmark:
+				alist[leftmark], alist[rightmark] = alist[rightmark], alist[leftmark]
+			else:
+				done = True
+		alist[first], alist[rightmark] = alist[rightmark], alist[first]
+		quicksort(alist, first, rightmark-1)
+		quicksort(alist, rightmark+1, last)
 
 
+# 快速排序，利用partition函数
+def partition(alist, first, last):
+	base = alist[first]
+	leftmark = first + 1
+	rightmark = last
 
+	done = False
+	while not done:
+		while leftmark <= rightmark and alist[leftmark] <= base:
+			leftmark += 1
+		while alist[rightmark] >= base and rightmark >= leftmark:
+			rightmark -= 1
+		if leftmark < rightmark:
+			alist[leftmark],alist[rightmark] = alist[rightmark],alist[leftmark]
+		else:
+			done = True
+	alist[first],alist[rightmark] = alist[rightmark],alist[first]
+	# 分割点为右标记所示位置
+	return rightmark
+
+def quicksort2(alist, first=0, last=None):
+	if last == None:
+		last = len(alist) - 1
+	if first < last:
+		splitpoint = partition(alist, first, last)
+		quicksort2(alist, first, splitpoint-1)
+		quicksort2(alist, splitpoint+1, last)
+
+# 堆排序
+# 调整最大堆的函数（即以start为根结点的堆调整为最大堆）
+def heapify(alist, start, end):
+	root = start
+	while True:
+		child = 2 * start + 1 # 左孩子
+		if child > end:
+			break
+		if child + 1 <= end and alist[child+1] > alist[child]:
+			child = child + 1
+		if alist[root] > alist[child]:
+			alist[root], alist[child] = alist[child], alist[root]
+			# root变为child为向下调整
+			root = child
+		else:
+			break
+
+def heapsort(alist):
+	length = len(alist)
+	# 最后一个非叶子结点
+	first = length // 2 - 1
+
+	# 构建最大堆
+	for start in range(first, -1, -1):
+		heapify(alist, start, length-1)
+
+	# 排序（替换+调整）
+	for end in range(length-1, 0, -1):
+		alist[0],alist[end] = alist[end], alist[0]
+		heapify(alist, 0, end-1)

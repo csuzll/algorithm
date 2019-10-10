@@ -25,6 +25,3 @@ def findKthToTail(head, k):
 		slow = slow.next
 
 	return slow
-
-
-
